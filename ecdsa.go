@@ -30,6 +30,7 @@ import (
 	"io"
 	"math/big"
 
+	gincocrypto "github.com/GincoInc/go-crypto"
 	"github.com/miekg/pkcs11"
 	"github.com/pkg/errors"
 )
@@ -133,6 +134,12 @@ var wellKnownCurves = map[string]curveInfo{
 	"B-571": {
 		mustMarshal(asn1.ObjectIdentifier{1, 3, 132, 0, 39}),
 		nil,
+	},
+
+	// TODO: SEC2v2 draft
+	"secp256k1": {
+		mustMarshal(asn1.ObjectIdentifier{1, 3, 132, 0, 10}),
+		gincocrypto.Secp256k1(),
 	},
 }
 
