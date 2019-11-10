@@ -30,6 +30,7 @@ import (
 	"io"
 	"math/big"
 
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/miekg/pkcs11"
 	"github.com/pkg/errors"
 )
@@ -134,6 +135,21 @@ var wellKnownCurves = map[string]curveInfo{
 		mustMarshal(asn1.ObjectIdentifier{1, 3, 132, 0, 39}),
 		nil,
 	},
+
+	// TODO: SEC2v2 draft
+	"secp256k1": {
+		mustMarshal(asn1.ObjectIdentifier{1, 3, 132, 0, 10}),
+		btcec.S256(),
+	},
+}
+
+// TODO: workaround for btcec
+func init() {
+	if secp256k1, ok := wellKnownCurves["secp256k1"]; ok {
+		if koblitzCurve, ok := secp256k1.curve.(*btcec.KoblitzCurve); ok {
+			koblitzCurve.Name = "secp256k1"
+		}
+	}
 }
 
 func marshalEcParams(c elliptic.Curve) ([]byte, error) {
